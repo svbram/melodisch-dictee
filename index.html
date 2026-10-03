@@ -1,0 +1,1804 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Melodisch dictee</title>
+
+<style>
+
+body {
+    font-family: Arial, sans-serif;
+    max-width: 850px;
+    margin: 40px auto;
+    padding: 20px;
+    text-align: center;
+    background: #f3f3f3;
+}
+
+.kaart {
+    background: white;
+    padding: 35px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+}
+
+h1 {
+    margin-top: 0;
+}
+
+.info {
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+
+/* =========================================================
+   INTERVALLEN
+   ========================================================= */
+
+.interval-keuze {
+    margin: 22px auto;
+    padding: 15px;
+    max-width: 600px;
+
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+
+    text-align: left;
+}
+
+.interval-titel {
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+.interval-opties {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 9px;
+}
+
+.interval-opties label {
+    font-size: 16px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.interval-opties input {
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+    margin-right: 7px;
+}
+
+
+/* =========================================================
+   OVERIGE INSTELLINGEN
+   ========================================================= */
+
+.instellingen {
+    max-width: 600px;
+    margin: 20px auto;
+
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    text-align: left;
+}
+
+.instelling {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 20px;
+}
+
+.instelling label {
+    font-weight: bold;
+}
+
+.instelling select,
+.instelling input {
+    width: 160px;
+    box-sizing: border-box;
+
+    font-size: 16px;
+    padding: 6px;
+}
+
+
+/* =========================================================
+   KNOPPEN
+   ========================================================= */
+
+.knoppen {
+    margin-top: 25px;
+}
+
+button {
+    font-size: 17px;
+    padding: 12px 18px;
+    margin: 6px;
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   TEMPO
+   ========================================================= */
+
+.tempo {
+    margin-top: 25px;
+    margin-bottom: 10px;
+}
+
+.tempo label {
+    font-size: 17px;
+}
+
+#tempo {
+    width: 320px;
+    max-width: 80%;
+    margin-top: 12px;
+}
+
+.tempo-schaal {
+    width: 320px;
+    max-width: 80%;
+
+    margin: 2px auto 0;
+
+    display: flex;
+    justify-content: space-between;
+
+    color: #777;
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   MELDING
+   ========================================================= */
+
+#melding {
+    min-height: 24px;
+    margin-top: 12px;
+
+    color: #a00000;
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   OPLOSSING
+   ========================================================= */
+
+#oplossing {
+    margin-top: 30px;
+    display: none;
+}
+
+canvas {
+    width: 100%;
+    max-width: 760px;
+    height: auto;
+    background: white;
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="kaart">
+
+    <h1>Melodisch dictee</h1>
+
+    <div class="info">
+        Kies de intervallen, richting, beginnoot en het aantal noten.
+    </div>
+
+
+    <!-- =====================================================
+         INTERVALLEN
+         ===================================================== -->
+
+    <div class="interval-keuze">
+
+        <div class="interval-titel">
+            Intervallen
+        </div>
+
+        <div class="interval-opties">
+
+            <label>
+                <input
+                    type="checkbox"
+                    id="intervalHalveToon"
+                >
+                Halve toon
+            </label>
+
+            <label>
+                <input
+                    type="checkbox"
+                    id="intervalHeleToon"
+                    checked
+                >
+                Hele toon
+            </label>
+
+            <label>
+                <input
+                    type="checkbox"
+                    id="intervalKwart"
+                >
+                Kwart
+            </label>
+
+            <label>
+                <input
+                    type="checkbox"
+                    id="intervalKwint"
+                    checked
+                >
+                Kwint
+            </label>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         INSTELLINGEN
+         ===================================================== -->
+
+    <div class="instellingen">
+
+
+        <div class="instelling">
+
+            <label for="aantalNoten">
+                Aantal noten
+            </label>
+
+            <input
+                type="number"
+                id="aantalNoten"
+                min="2"
+                max="32"
+                value="8"
+            >
+
+        </div>
+
+
+        <div class="instelling">
+
+            <label for="richting">
+                Richting
+            </label>
+
+            <select id="richting">
+
+                <option value="stijgend">
+                    Stijgend
+                </option>
+
+                <option value="dalend">
+                    Dalend
+                </option>
+
+                <option
+                    value="beide"
+                    selected
+                >
+                    Beide
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="instelling">
+
+            <label for="beginnoot">
+                Beginnoot
+            </label>
+
+            <select id="beginnoot">
+
+                <option value="60" selected>
+                    C
+                </option>
+
+                <option value="61">
+                    C♯
+                </option>
+
+                <option value="62">
+                    D
+                </option>
+
+                <option value="63">
+                    E♭
+                </option>
+
+                <option value="64">
+                    E
+                </option>
+
+                <option value="65">
+                    F
+                </option>
+
+                <option value="66">
+                    F♯
+                </option>
+
+                <option value="67">
+                    G
+                </option>
+
+                <option value="68">
+                    A♭
+                </option>
+
+                <option value="69">
+                    A
+                </option>
+
+                <option value="70">
+                    B♭
+                </option>
+
+                <option value="71">
+                    B
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         KNOPPEN
+         ===================================================== -->
+
+    <div class="knoppen">
+
+        <button id="nieuwKnop">
+            Nieuw dictee
+        </button>
+
+        <button id="speelKnop">
+            ▶ Afspelen
+        </button>
+
+        <button id="oplossingKnop">
+            Toon oplossing
+        </button>
+
+    </div>
+
+
+    <!-- =====================================================
+         TEMPO
+         ===================================================== -->
+
+    <div class="tempo">
+
+        <label for="tempo">
+
+            Tempo:
+
+            <strong>
+                <span id="tempoWaarde">
+                    20
+                </span>
+
+                BPM
+            </strong>
+
+        </label>
+
+        <br>
+
+        <input
+            type="range"
+            id="tempo"
+            min="20"
+            max="120"
+            value="20"
+            step="5"
+        >
+
+        <div class="tempo-schaal">
+
+            <span>20</span>
+
+            <span>70</span>
+
+            <span>120</span>
+
+        </div>
+
+    </div>
+
+
+    <div id="melding"></div>
+
+
+    <!-- =====================================================
+         OPLOSSING
+         ===================================================== -->
+
+    <div id="oplossing">
+
+        <canvas
+            id="notenbalk"
+            width="760"
+            height="360"
+        >
+        </canvas>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+/* =========================================================
+   INSTELLINGEN
+   ========================================================= */
+
+const INSTELLINGEN = {
+
+    aantalNoten: 8,
+
+    tempo: 20,
+
+    maxZelfdeInterval: 2,
+
+    /*
+    Verruimd bereik:
+
+    C3 = MIDI 48
+    C7 = MIDI 96
+    */
+
+    laagsteNoot: 48,
+
+    hoogsteNoot: 96,
+
+    startNoot: 60
+};
+
+
+/* =========================================================
+   INTERVALLEN
+   ========================================================= */
+
+const ALLE_INTERVALLEN = {
+
+    halveToon: {
+        afstand: 1,
+        checkbox: "intervalHalveToon"
+    },
+
+    heleToon: {
+        afstand: 2,
+        checkbox: "intervalHeleToon"
+    },
+
+    kwart: {
+        afstand: 5,
+        checkbox: "intervalKwart"
+    },
+
+    kwint: {
+        afstand: 7,
+        checkbox: "intervalKwint"
+    }
+};
+
+
+/* =========================================================
+   PROGRAMMASTATUS
+   ========================================================= */
+
+let audioContext = null;
+
+let melodie = [];
+
+
+/* =========================================================
+   GESELECTEERDE INTERVALLEN
+   ========================================================= */
+
+function geselecteerdeIntervallen() {
+
+    const resultaat = {};
+
+
+    for (
+        const [naam, gegevens]
+        of Object.entries(ALLE_INTERVALLEN)
+    ) {
+
+        const checkbox =
+            document.getElementById(
+                gegevens.checkbox
+            );
+
+
+        if (checkbox.checked) {
+
+            resultaat[naam] =
+                gegevens.afstand;
+        }
+    }
+
+
+    return resultaat;
+}
+
+
+/* =========================================================
+   AUDIO
+   ========================================================= */
+
+function midiNaarFrequentie(midi) {
+
+    return (
+        440 *
+        Math.pow(
+            2,
+            (midi - 69) / 12
+        )
+    );
+}
+
+
+/* =========================================================
+   PIANO-ACHTIGE NOOT
+   ========================================================= */
+
+function speelNoot(
+    midi,
+    startTijd,
+    duur
+) {
+
+    const frequentie =
+        midiNaarFrequentie(midi);
+
+
+    const master =
+        audioContext.createGain();
+
+
+    master.connect(
+        audioContext.destination
+    );
+
+
+    /*
+    Envelope
+    */
+
+    master.gain.setValueAtTime(
+        0.0001,
+        startTijd
+    );
+
+
+    master.gain.exponentialRampToValueAtTime(
+        0.45,
+        startTijd + 0.008
+    );
+
+
+    master.gain.exponentialRampToValueAtTime(
+        0.28,
+        startTijd + 0.20
+    );
+
+
+    master.gain.exponentialRampToValueAtTime(
+        0.16,
+        startTijd + duur * 0.70
+    );
+
+
+    master.gain.exponentialRampToValueAtTime(
+        0.0001,
+        startTijd + duur
+    );
+
+
+    /*
+    Boventonen
+    */
+
+    const boventonen = [
+
+        {
+            verhouding: 1,
+            volume: 1.00
+        },
+
+        {
+            verhouding: 2,
+            volume: 0.35
+        },
+
+        {
+            verhouding: 3,
+            volume: 0.16
+        },
+
+        {
+            verhouding: 4,
+            volume: 0.08
+        },
+
+        {
+            verhouding: 5,
+            volume: 0.04
+        }
+    ];
+
+
+    boventonen.forEach(
+        boventoon => {
+
+            const oscillator =
+                audioContext.createOscillator();
+
+
+            const gain =
+                audioContext.createGain();
+
+
+            oscillator.type =
+                "sine";
+
+
+            oscillator.frequency.setValueAtTime(
+                frequentie *
+                boventoon.verhouding,
+
+                startTijd
+            );
+
+
+            gain.gain.value =
+                boventoon.volume;
+
+
+            oscillator.connect(
+                gain
+            );
+
+
+            gain.connect(
+                master
+            );
+
+
+            oscillator.start(
+                startTijd
+            );
+
+
+            oscillator.stop(
+                startTijd + duur
+            );
+        }
+    );
+}
+
+
+/* =========================================================
+   TEMPO
+   ========================================================= */
+
+function veranderTempo(
+    nieuwTempo
+) {
+
+    INSTELLINGEN.tempo =
+        Number(nieuwTempo);
+
+
+    document
+        .getElementById(
+            "tempoWaarde"
+        )
+        .textContent =
+        nieuwTempo;
+}
+
+
+/* =========================================================
+   ARRAY WILLEKEURIG SCHUDDEN
+   ========================================================= */
+
+function schudArray(array) {
+
+    const kopie =
+        [...array];
+
+
+    for (
+        let i = kopie.length - 1;
+        i > 0;
+        i--
+    ) {
+
+        const j =
+            Math.floor(
+                Math.random() *
+                (i + 1)
+            );
+
+
+        [
+            kopie[i],
+            kopie[j]
+        ]
+        =
+        [
+            kopie[j],
+            kopie[i]
+        ];
+    }
+
+
+    return kopie;
+}
+
+
+/* =========================================================
+   MELODIE BOUWEN
+
+   Dit gebruikt backtracking.
+
+   Als een gekozen interval later vastloopt,
+   gaat het programma terug en probeert het
+   een andere mogelijkheid.
+   ========================================================= */
+
+function bouwMelodie(
+    noten,
+    intervallen,
+    vorigType,
+    aantalZelfde
+) {
+
+    /*
+    Genoeg noten?
+    */
+
+    if (
+        noten.length ===
+        INSTELLINGEN.aantalNoten
+    ) {
+
+        return [...noten];
+    }
+
+
+    const huidigeNoot =
+        noten[
+            noten.length - 1
+        ];
+
+
+    const aantalIntervalTypes =
+        Object.keys(
+            intervallen
+        ).length;
+
+
+    const richting =
+        document
+            .getElementById(
+                "richting"
+            )
+            .value;
+
+
+    let mogelijkheden = [];
+
+
+    /* =====================================================
+       ALLE MOGELIJKE INTERVALLEN PROBEREN
+       ===================================================== */
+
+    for (
+        const [type, afstand]
+        of Object.entries(intervallen)
+    ) {
+
+        /*
+        Maximum twee dezelfde intervaltypes
+        na elkaar.
+
+        Deze beperking wordt uitgeschakeld
+        als maar één intervaltype gekozen is.
+        */
+
+        if (
+            aantalIntervalTypes > 1 &&
+            type === vorigType &&
+            aantalZelfde >=
+                INSTELLINGEN.maxZelfdeInterval
+        ) {
+
+            continue;
+        }
+
+
+        /* =================================================
+           STIJGEND
+           ================================================= */
+
+        if (
+            richting === "stijgend" ||
+            richting === "beide"
+        ) {
+
+            const omhoog =
+                huidigeNoot +
+                afstand;
+
+
+            if (
+                omhoog <=
+                INSTELLINGEN.hoogsteNoot
+            ) {
+
+                mogelijkheden.push({
+
+                    noot:
+                        omhoog,
+
+                    type:
+                        type
+                });
+            }
+        }
+
+
+        /* =================================================
+           DALEND
+           ================================================= */
+
+        if (
+            richting === "dalend" ||
+            richting === "beide"
+        ) {
+
+            const omlaag =
+                huidigeNoot -
+                afstand;
+
+
+            if (
+                omlaag >=
+                INSTELLINGEN.laagsteNoot
+            ) {
+
+                mogelijkheden.push({
+
+                    noot:
+                        omlaag,
+
+                    type:
+                        type
+                });
+            }
+        }
+    }
+
+
+    /*
+    Willekeurige volgorde zodat niet telkens
+    dezelfde melodie ontstaat.
+    */
+
+    mogelijkheden =
+        schudArray(
+            mogelijkheden
+        );
+
+
+    /* =====================================================
+       BACKTRACKING
+       ===================================================== */
+
+    for (
+        const keuze
+        of mogelijkheden
+    ) {
+
+        const nieuwAantalZelfde =
+
+            keuze.type === vorigType
+
+            ? aantalZelfde + 1
+
+            : 1;
+
+
+        noten.push(
+            keuze.noot
+        );
+
+
+        const resultaat =
+            bouwMelodie(
+
+                noten,
+
+                intervallen,
+
+                keuze.type,
+
+                nieuwAantalZelfde
+            );
+
+
+        if (resultaat) {
+
+            return resultaat;
+        }
+
+
+        /*
+        Deze keuze liep vast.
+
+        Laatste noot weer verwijderen.
+        */
+
+        noten.pop();
+    }
+
+
+    return null;
+}
+
+
+/* =========================================================
+   NIEUW DICTEE MAKEN
+   ========================================================= */
+
+function maakDictee() {
+
+    const intervallen =
+        geselecteerdeIntervallen();
+
+
+    /* =====================================================
+       MINSTENS ÉÉN INTERVAL
+       ===================================================== */
+
+    if (
+        Object.keys(
+            intervallen
+        ).length === 0
+    ) {
+
+        document
+            .getElementById(
+                "melding"
+            )
+            .textContent =
+            "Kies minstens één interval.";
+
+
+        melodie = [];
+
+
+        return false;
+    }
+
+
+    /* =====================================================
+       AANTAL NOTEN UITLEZEN
+       ===================================================== */
+
+    let aantal =
+        Number(
+            document
+                .getElementById(
+                    "aantalNoten"
+                )
+                .value
+        );
+
+
+    if (
+        !Number.isInteger(aantal) ||
+        aantal < 2
+    ) {
+
+        aantal = 8;
+
+
+        document
+            .getElementById(
+                "aantalNoten"
+            )
+            .value =
+            8;
+    }
+
+
+    if (
+        aantal > 32
+    ) {
+
+        aantal = 32;
+
+
+        document
+            .getElementById(
+                "aantalNoten"
+            )
+            .value =
+            32;
+    }
+
+
+    INSTELLINGEN.aantalNoten =
+        aantal;
+
+
+    /* =====================================================
+       BEGINNOOT
+       ===================================================== */
+
+    INSTELLINGEN.startNoot =
+        Number(
+            document
+                .getElementById(
+                    "beginnoot"
+                )
+                .value
+        );
+
+
+    document
+        .getElementById(
+            "melding"
+        )
+        .textContent =
+        "";
+
+
+    /* =====================================================
+       MELODIE GENEREREN
+       ===================================================== */
+
+    const resultaat =
+        bouwMelodie(
+
+            [
+                INSTELLINGEN.startNoot
+            ],
+
+            intervallen,
+
+            null,
+
+            0
+        );
+
+
+    if (!resultaat) {
+
+        document
+            .getElementById(
+                "melding"
+            )
+            .textContent =
+            "Met deze combinatie van intervallen, richting en aantal noten kan binnen het bereik geen dictee worden gemaakt.";
+
+
+        melodie = [];
+
+
+        return false;
+    }
+
+
+    melodie =
+        resultaat;
+
+
+    return true;
+}
+
+
+/* =========================================================
+   NIEUW DICTEE
+   ========================================================= */
+
+function nieuwDictee() {
+
+    document
+        .getElementById(
+            "oplossing"
+        )
+        .style.display =
+        "none";
+
+
+    if (
+        maakDictee()
+    ) {
+
+        speelDictee();
+    }
+}
+
+
+/* =========================================================
+   DICTEE AFSPELEN
+   ========================================================= */
+
+function speelDictee() {
+
+    if (
+        melodie.length === 0
+    ) {
+
+        if (
+            !maakDictee()
+        ) {
+
+            return;
+        }
+    }
+
+
+    /*
+    AudioContext pas maken na interactie
+    van de gebruiker.
+
+    Dit is belangrijk voor Safari/iPad.
+    */
+
+    if (
+        !audioContext
+    ) {
+
+        audioContext =
+            new (
+                window.AudioContext ||
+                window.webkitAudioContext
+            )();
+    }
+
+
+    if (
+        audioContext.state ===
+        "suspended"
+    ) {
+
+        audioContext.resume();
+    }
+
+
+    const start =
+        audioContext.currentTime +
+        0.1;
+
+
+    /*
+    Tijd tussen twee opeenvolgende noten.
+    */
+
+    const tussenruimte =
+        60 /
+        INSTELLINGEN.tempo;
+
+
+    /*
+    De noot duurt 82% van de tijd tussen
+    twee noten.
+
+    Daardoor ontstaat een kleine stilte
+    tussen de noten.
+    */
+
+    const nootDuur =
+        tussenruimte *
+        0.82;
+
+
+    melodie.forEach(
+        (noot, index) => {
+
+            speelNoot(
+
+                noot,
+
+                start +
+                index *
+                tussenruimte,
+
+                nootDuur
+            );
+        }
+    );
+}
+
+
+/* =========================================================
+   NOOTNAMEN
+   ========================================================= */
+
+const NOOTNAMEN = [
+
+    "C",
+    "C♯",
+    "D",
+    "E♭",
+    "E",
+    "F",
+    "F♯",
+    "G",
+    "A♭",
+    "A",
+    "B♭",
+    "B"
+];
+
+
+function midiNaarNaam(
+    midi
+) {
+
+    return NOOTNAMEN[
+        midi % 12
+    ];
+}
+
+
+/* =========================================================
+   LETTERNAAM VOOR NOTENBALK
+   ========================================================= */
+
+function letterVoorMidi(
+    midi
+) {
+
+    const mapping = {
+
+        0: "C",
+        1: "C",
+
+        2: "D",
+
+        3: "E",
+        4: "E",
+
+        5: "F",
+        6: "F",
+
+        7: "G",
+
+        8: "A",
+        9: "A",
+
+        10: "B",
+        11: "B"
+    };
+
+
+    return mapping[
+        midi % 12
+    ];
+}
+
+
+/* =========================================================
+   OCTAAF
+   ========================================================= */
+
+function octaafVoorMidi(
+    midi
+) {
+
+    return (
+        Math.floor(
+            midi / 12
+        )
+        - 1
+    );
+}
+
+
+/* =========================================================
+   DIATONISCHE POSITIE
+   ========================================================= */
+
+function diatonischeIndex(
+    midi
+) {
+
+    const letter =
+        letterVoorMidi(
+            midi
+        );
+
+
+    const octaaf =
+        octaafVoorMidi(
+            midi
+        );
+
+
+    const letterIndex = {
+
+        C: 0,
+        D: 1,
+        E: 2,
+        F: 3,
+        G: 4,
+        A: 5,
+        B: 6
+    };
+
+
+    return (
+        octaaf * 7 +
+        letterIndex[letter]
+    );
+}
+
+
+/* =========================================================
+   NOTENBALK TEKENEN
+   ========================================================= */
+
+function tekenNotenbalk() {
+
+    const canvas =
+        document.getElementById(
+            "notenbalk"
+        );
+
+
+    const ctx =
+        canvas.getContext(
+            "2d"
+        );
+
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    const links = 45;
+
+    const rechts = 730;
+
+    /*
+    We zetten de balk iets lager omdat
+    het bereik nu veel groter is.
+    */
+
+    const ondersteLijn = 190;
+
+    const lijnAfstand = 16;
+
+
+    ctx.strokeStyle =
+        "black";
+
+    ctx.fillStyle =
+        "black";
+
+    ctx.lineWidth =
+        1.5;
+
+
+    /* =====================================================
+       VIJF LIJNEN
+       ===================================================== */
+
+    for (
+        let i = 0;
+        i < 5;
+        i++
+    ) {
+
+        const y =
+            ondersteLijn -
+            i *
+            lijnAfstand;
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            links,
+            y
+        );
+
+        ctx.lineTo(
+            rechts,
+            y
+        );
+
+        ctx.stroke();
+    }
+
+
+    /* =====================================================
+       G-SLEUTEL
+       ===================================================== */
+
+    ctx.font =
+        "70px serif";
+
+
+    ctx.fillText(
+        "𝄞",
+        48,
+        190
+    );
+
+
+    /*
+    Onderste lijn van de vioolsleutel
+    is E4.
+    */
+
+    const indexE4 =
+        4 * 7 + 2;
+
+
+    const halveAfstand =
+        lijnAfstand / 2;
+
+
+    /*
+    Horizontale afstand automatisch aanpassen
+    aan het aantal noten.
+    */
+
+    const beginX =
+        145;
+
+
+    const beschikbareBreedte =
+        555;
+
+
+    const stapX =
+
+        melodie.length > 1
+
+        ? beschikbareBreedte /
+          (melodie.length - 1)
+
+        : 0;
+
+
+    melodie.forEach(
+        (midi, i) => {
+
+            const x =
+                beginX +
+                i * stapX;
+
+
+            const index =
+                diatonischeIndex(
+                    midi
+                );
+
+
+            const verschil =
+                index -
+                indexE4;
+
+
+            const y =
+                ondersteLijn -
+                verschil *
+                halveAfstand;
+
+
+            /* =============================================
+               HULPLIJNEN ONDER NOTENBALK
+               ============================================= */
+
+            if (
+                y >
+                ondersteLijn
+            ) {
+
+                for (
+                    let ly =
+                        ondersteLijn +
+                        lijnAfstand;
+
+                    ly <=
+                        y + 2;
+
+                    ly +=
+                        lijnAfstand
+                ) {
+
+                    ctx.beginPath();
+
+                    ctx.moveTo(
+                        x - 13,
+                        ly
+                    );
+
+                    ctx.lineTo(
+                        x + 13,
+                        ly
+                    );
+
+                    ctx.stroke();
+                }
+            }
+
+
+            /* =============================================
+               HULPLIJNEN BOVEN NOTENBALK
+               ============================================= */
+
+            const bovensteLijn =
+                ondersteLijn -
+                4 *
+                lijnAfstand;
+
+
+            if (
+                y <
+                bovensteLijn
+            ) {
+
+                for (
+                    let ly =
+                        bovensteLijn -
+                        lijnAfstand;
+
+                    ly >=
+                        y - 2;
+
+                    ly -=
+                        lijnAfstand
+                ) {
+
+                    ctx.beginPath();
+
+                    ctx.moveTo(
+                        x - 13,
+                        ly
+                    );
+
+                    ctx.lineTo(
+                        x + 13,
+                        ly
+                    );
+
+                    ctx.stroke();
+                }
+            }
+
+
+            /* =============================================
+               NOOTKOP
+               ============================================= */
+
+            ctx.save();
+
+            ctx.translate(
+                x,
+                y
+            );
+
+            ctx.rotate(
+                -0.25
+            );
+
+
+            ctx.beginPath();
+
+
+            ctx.ellipse(
+                0,
+                0,
+                9,
+                6,
+                0,
+                0,
+                Math.PI * 2
+            );
+
+
+            ctx.fill();
+
+
+            ctx.restore();
+
+
+            /* =============================================
+               KRUIS OF MOL
+               ============================================= */
+
+            const naam =
+                midiNaarNaam(
+                    midi
+                );
+
+
+            if (
+                naam.includes("♯") ||
+                naam.includes("♭")
+            ) {
+
+                const teken =
+
+                    naam.includes("♯")
+
+                    ? "♯"
+
+                    : "♭";
+
+
+                ctx.font =
+                    "22px serif";
+
+
+                ctx.textAlign =
+                    "center";
+
+
+                ctx.fillText(
+                    teken,
+                    x - 24,
+                    y + 7
+                );
+            }
+
+
+            /* =============================================
+               NOOTNAAM ONDERAAN
+               ============================================= */
+
+            ctx.font =
+                "bold 16px Arial";
+
+
+            ctx.textAlign =
+                "center";
+
+
+            ctx.fillText(
+                naam,
+                x,
+                315
+            );
+        }
+    );
+
+
+    ctx.textAlign =
+        "start";
+}
+
+
+/* =========================================================
+   OPLOSSING TONEN
+   ========================================================= */
+
+function toonOplossing() {
+
+    if (
+        melodie.length === 0
+    ) {
+
+        return;
+    }
+
+
+    document
+        .getElementById(
+            "oplossing"
+        )
+        .style.display =
+        "block";
+
+
+    tekenNotenbalk();
+}
+
+
+/* =========================================================
+   EVENT LISTENERS
+   ========================================================= */
+
+document
+    .getElementById(
+        "nieuwKnop"
+    )
+    .addEventListener(
+        "click",
+        nieuwDictee
+    );
+
+
+document
+    .getElementById(
+        "speelKnop"
+    )
+    .addEventListener(
+        "click",
+        speelDictee
+    );
+
+
+document
+    .getElementById(
+        "oplossingKnop"
+    )
+    .addEventListener(
+        "click",
+        toonOplossing
+    );
+
+
+document
+    .getElementById(
+        "tempo"
+    )
+    .addEventListener(
+        "input",
+        function() {
+
+            veranderTempo(
+                this.value
+            );
+        }
+    );
+
+
+/* =========================================================
+   EERSTE DICTEE GENEREREN
+   ========================================================= */
+
+maakDictee();
+
+</script>
+
+</body>
+</html>
