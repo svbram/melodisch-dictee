@@ -1,0 +1,228 @@
+
+body {
+    font-family: Arial, sans-serif;
+    max-width: 850px;
+    margin: 40px auto;
+    padding: 20px;
+    text-align: center;
+    background: #f3f3f3;
+}
+
+.kaart {
+    background: white;
+    padding: 35px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+}
+
+h1 {
+    margin-top: 0;
+}
+
+.info {
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+
+/* =========================================================
+   KEUZEBLOK
+   ========================================================= */
+
+.keuzeblok {
+    max-width: 650px;
+    margin: 22px auto;
+    padding: 18px 0;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+
+    text-align: left;
+}
+
+
+/* =========================================================
+   INTERVALLEN
+   ========================================================= */
+
+.interval-titel {
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+.interval-opties {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 9px;
+}
+
+.interval-opties label {
+    font-size: 16px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.interval-opties input {
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+    margin-right: 7px;
+}
+
+
+/* =========================================================
+   INSTELLINGEN
+   ========================================================= */
+
+.instellingen {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.instelling {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+}
+
+.instelling label {
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.instelling select,
+.instelling input {
+    width: 130px;
+    box-sizing: border-box;
+    font-size: 16px;
+    padding: 6px;
+}
+
+
+/* =========================================================
+   KNOPPEN
+   ========================================================= */
+
+.knoppen {
+    margin-top: 25px;
+}
+
+button {
+    font-size: 17px;
+    padding: 12px 18px;
+    margin: 6px;
+    cursor: pointer;
+}
+
+.audio-reset {
+    font-size: 14px;
+    padding: 8px 12px;
+}
+
+
+/* =========================================================
+   TEMPO
+   ========================================================= */
+
+.tempo {
+    margin-top: 25px;
+    margin-bottom: 10px;
+}
+
+.tempo label {
+    font-size: 17px;
+}
+
+#tempo {
+    width: 320px;
+    max-width: 80%;
+    margin-top: 12px;
+}
+
+.tempo-schaal {
+    width: 320px;
+    max-width: 80%;
+    margin: 2px auto 0;
+    display: flex;
+    justify-content: space-between;
+    color: #777;
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   MELDINGEN
+   ========================================================= */
+
+#melding {
+    min-height: 24px;
+    margin-top: 12px;
+    color: #a00000;
+    font-weight: bold;
+}
+
+#audioStatus {
+    min-height: 20px;
+    margin-top: 5px;
+    color: #666;
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   OPLOSSING
+   ========================================================= */
+
+#oplossing {
+    margin-top: 30px;
+    display: none;
+}
+
+canvas {
+    width: 100%;
+    max-width: 760px;
+    height: auto;
+    background: white;
+}
+
+.credits {
+    margin-top: 35px;
+    font-size: 12px;
+    color: #777;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   SMALLE SCHERMEN
+   ========================================================= */
+
+@media (max-width: 650px) {
+
+    body {
+        margin: 10px auto;
+        padding: 10px;
+    }
+
+    .kaart {
+        padding: 20px;
+    }
+
+    .keuzeblok {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+
+    .instelling select,
+    .instelling input {
+        width: 140px;
+    }
+}
+
