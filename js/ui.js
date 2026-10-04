@@ -4,6 +4,9 @@
 
 function maakDictee() {
 
+    stopMarkering();
+
+
     const intervallen =
         geselecteerdeIntervallen();
 
@@ -112,6 +115,40 @@ function maakDictee() {
    AFSPELEN
    ========================================================= */
 
+let markeerTimers = [];
+
+
+function stopMarkering() {
+
+    markeerTimers.forEach(clearTimeout);
+
+    markeerTimers = [];
+
+    if (actieveNoot !== -1) {
+
+        actieveNoot = -1;
+
+        tekenNotenbalk();
+    }
+}
+
+
+function markeerNoot(index, vertraging) {
+
+    markeerTimers.push(
+        setTimeout(
+            () => {
+
+                actieveNoot = index;
+
+                tekenNotenbalk();
+            },
+            vertraging
+        )
+    );
+}
+
+
 async function speelDictee() {
 
     if (
@@ -161,6 +198,13 @@ async function speelDictee() {
         0.15;
 
 
+    stopMarkering();
+
+
+    const wachttijd =
+        (start - audioContext.currentTime) * 1000;
+
+
     melodie.forEach(
         (noot, index) => {
 
@@ -171,7 +215,26 @@ async function speelDictee() {
                 tussenruimte,
                 nootDuur
             );
+
+            markeerNoot(
+                index,
+                wachttijd +
+                index *
+                tussenruimte *
+                1000
+            );
         }
+    );
+
+
+    markeerTimers.push(
+        setTimeout(
+            stopMarkering,
+            wachttijd +
+            (melodie.length - 1) *
+            tussenruimte * 1000 +
+            nootDuur * 1000
+        )
     );
 }
 

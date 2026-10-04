@@ -92,6 +92,9 @@ function diatonischeIndex(midi) {
    NOTENBALK
    ========================================================= */
 
+let actieveNoot = -1;
+
+
 function tekenNotenbalk() {
 
     const canvas =
@@ -285,6 +288,12 @@ function tekenNotenbalk() {
                     ctx.stroke();
                 }
             }
+
+
+            ctx.fillStyle =
+                i === actieveNoot
+                ? "#d32f2f"
+                : "black";
 
 
             /* nootkop */
