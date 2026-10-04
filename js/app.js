@@ -1613,3 +1613,9 @@ document.getElementById(
 
 maakDictee();
 
+
+/* De AudioContext blijft "suspended" tot de eerste klik; samples laden kan al wel. */
+if (maakAudioContext()) {
+    laadPiano();
+}
+
