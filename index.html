@@ -306,7 +306,6 @@ canvas {
                 id="aantalNoten"
                 min="2"
                 max="32"
-                value="8"
             >
 
         </div>
@@ -470,6 +469,10 @@ const INSTELLINGEN = {
 
     startNoot: 60
 };
+
+document.getElementById(
+    "aantalNoten"
+).value = INSTELLINGEN.aantalNoten;
 
 
 /* =========================================================
@@ -1273,11 +1276,11 @@ function maakDictee() {
         aantal < 2
     ) {
 
-        aantal = 8;
+        aantal = INSTELLINGEN.aantalNoten;
 
         document.getElementById(
             "aantalNoten"
-        ).value = 8;
+        ).value = aantal;
     }
 
 
