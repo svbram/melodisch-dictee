@@ -5,7 +5,7 @@
 
 const INSTELLINGEN = {
 
-    aantalNoten: 10,
+    aantalNoten: 8,
 
     tempo: 40,
 
