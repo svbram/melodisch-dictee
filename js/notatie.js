@@ -60,10 +60,10 @@ function octaafVoorMidi(midi) {
 }
 
 
-function diatonischeIndex(midi) {
-
-    const letter =
-        letterVoorMidi(midi);
+function diatonischeIndex(
+    midi,
+    letter = letterVoorMidi(midi)
+) {
 
 
     const octaaf =
@@ -85,6 +85,65 @@ function diatonischeIndex(midi) {
         octaaf * 7 +
         letterIndex[letter]
     );
+}
+
+
+/* =========================================================
+   SPELLING
+   Zwarte toetsen kunnen met kruis of mol geschreven worden.
+   Bij een kleine secunde kiezen we de schrijfwijze waarbij
+   beide noten op een andere notenbalkpositie komen.
+   ========================================================= */
+
+const ZWARTE_TOETSEN = {
+    1:  { kruis: ["C", "♯"], mol: ["D", "♭"] },
+    3:  { kruis: ["D", "♯"], mol: ["E", "♭"] },
+    6:  { kruis: ["F", "♯"], mol: ["G", "♭"] },
+    8:  { kruis: ["G", "♯"], mol: ["A", "♭"] },
+    10: { kruis: ["A", "♯"], mol: ["B", "♭"] }
+};
+
+
+function isZwarteToets(midi) {
+
+    return midi % 12 in ZWARTE_TOETSEN;
+}
+
+
+function spellingVoorNoot(melodie, i) {
+
+    const midi = melodie[i];
+
+    const letter = letterVoorMidi(midi);
+
+    if (!isZwarteToets(midi)) {
+
+        return { letter, teken: "" };
+    }
+
+    const opties = ZWARTE_TOETSEN[midi % 12];
+
+    let keuze = midi % 12 === 1 || midi % 12 === 6
+        ? "kruis"
+        : "mol";
+
+    for (const buur of [melodie[i - 1], melodie[i + 1]]) {
+
+        if (
+            buur !== undefined &&
+            Math.abs(midi - buur) === 1 &&
+            !isZwarteToets(buur)
+        ) {
+
+            keuze = buur < midi ? "mol" : "kruis";
+
+            break;
+        }
+    }
+
+    const [l, teken] = opties[keuze];
+
+    return { letter: l, teken };
 }
 
 
@@ -197,9 +256,17 @@ function tekenNotenbalk() {
                 i * stapX;
 
 
+            const spelling =
+                spellingVoorNoot(
+                    melodie,
+                    i
+                );
+
+
             const index =
                 diatonischeIndex(
-                    midi
+                    midi,
+                    spelling.letter
                 );
 
 
@@ -330,23 +397,14 @@ function tekenNotenbalk() {
             /* kruis of mol */
 
             const naam =
-                midiNaarNaam(
-                    midi
-                );
+                spelling.letter +
+                spelling.teken;
 
 
-            if (
-                naam.includes("♯") ||
-                naam.includes("♭")
-            ) {
+            if (spelling.teken) {
 
                 const teken =
-
-                    naam.includes("♯")
-
-                    ? "♯"
-
-                    : "♭";
+                    spelling.teken;
 
 
                 ctx.font =
