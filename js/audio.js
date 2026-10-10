@@ -235,31 +235,40 @@ async function zorgVoorAudio() {
     }
 
 
-    if (
-        audioContext.state === "suspended"
-    ) {
-
-        try {
-
-            await audioContext.resume();
-
-        }
-        catch (fout) {
-
-            console.error(fout);
-        }
+    if (!await hervatAudioContext()) {
+        return false;
     }
 
+
+    const geladen =
+        await laadPiano();
+
+
+    if (!geladen) {
+        return false;
+    }
+
+
+    return await hervatAudioContext();
+}
+
+
+async function hervatAudioContext() {
 
     if (
         audioContext.state !== "running"
     ) {
 
-        return false;
+        try {
+            await audioContext.resume();
+        }
+        catch (fout) {
+            console.error(fout);
+        }
     }
 
 
-    return await laadPiano();
+    return audioContext.state === "running";
 }
 
 
@@ -492,5 +501,4 @@ async function resetAudio() {
             "";
     }
 }
-
 

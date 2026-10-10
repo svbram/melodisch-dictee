@@ -170,7 +170,7 @@ async function speelDictee() {
         document.getElementById(
             "melding"
         ).textContent =
-            "audio kon niet worden gestart. probeer reset audio.";
+            "audio kon niet worden gestart. tik opnieuw op nieuw dictee of afspelen; probeer anders reset audio.";
 
 
         return;
@@ -403,4 +403,3 @@ maakDictee();
 if (maakAudioContext()) {
     laadPiano();
 }
-
