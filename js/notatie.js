@@ -62,13 +62,9 @@ function octaafVoorMidi(midi) {
 
 function diatonischeIndex(
     midi,
-    letter = letterVoorMidi(midi)
+    letter = letterVoorMidi(midi),
+    octaaf = octaafVoorMidi(midi)
 ) {
-
-
-    const octaaf =
-        octaafVoorMidi(midi);
-
 
     const letterIndex = {
         C: 0,
@@ -90,9 +86,8 @@ function diatonischeIndex(
 
 /* =========================================================
    SPELLING
-   Zwarte toetsen kunnen met kruis of mol geschreven worden.
-   Bij een kleine secunde kiezen we de schrijfwijze waarbij
-   beide noten op een andere notenbalkpositie komen.
+   De notatie volgt de diatonische intervalafstand, zodat
+   secunden, kwarten en kwinten niet als tertsen verschijnen.
    ========================================================= */
 
 const ZWARTE_TOETSEN = {
@@ -114,36 +109,82 @@ function spellingVoorNoot(melodie, i) {
 
     const midi = melodie[i];
 
-    const letter = letterVoorMidi(midi);
+    const letters = ["C", "D", "E", "F", "G", "A", "B"];
+    const natuurlijkeToonhoogtes = {
+        C: 0,
+        D: 2,
+        E: 4,
+        F: 5,
+        G: 7,
+        A: 9,
+        B: 11
+    };
+    const voortekens = {
+        "-2": "♭♭",
+        "-1": "♭",
+        0: "",
+        1: "♯",
+        2: "𝄪"
+    };
 
-    if (!isZwarteToets(midi)) {
+    if (i === 0) {
+        let letter = letterVoorMidi(midi);
 
-        return { letter, teken: "" };
-    }
+        if (isZwarteToets(midi)) {
+            const opties = ZWARTE_TOETSEN[midi % 12];
+            const keuze = midi % 12 === 1 || midi % 12 === 6
+                ? "kruis"
+                : "mol";
+            letter = opties[keuze][0];
 
-    const opties = ZWARTE_TOETSEN[midi % 12];
-
-    let keuze = midi % 12 === 1 || midi % 12 === 6
-        ? "kruis"
-        : "mol";
-
-    for (const buur of [melodie[i - 1], melodie[i + 1]]) {
-
-        if (
-            buur !== undefined &&
-            Math.abs(midi - buur) === 1 &&
-            !isZwarteToets(buur)
-        ) {
-
-            keuze = buur < midi ? "mol" : "kruis";
-
-            break;
+            return {
+                letter,
+                teken: opties[keuze][1],
+                octaaf: octaafVoorMidi(midi)
+            };
         }
+
+        return {
+            letter,
+            teken: "",
+            octaaf: octaafVoorMidi(midi)
+        };
     }
 
-    const [l, teken] = opties[keuze];
+    const vorige = spellingVoorNoot(melodie, i - 1);
+    const verschil = midi - melodie[i - 1];
+    const afstand = Math.abs(verschil);
+    const diatonischeStappen = {
+        1: 1,
+        2: 1,
+        5: 3,
+        7: 4,
+        12: 7
+    }[afstand];
 
-    return { letter: l, teken };
+    if (diatonischeStappen === undefined) {
+        throw new Error(`Onbekende intervalafstand: ${afstand}`);
+    }
+
+    const index =
+        diatonischeIndex(melodie[i - 1], vorige.letter, vorige.octaaf) +
+        Math.sign(verschil) * diatonischeStappen;
+    const octaaf = Math.floor(index / 7);
+    const letter = letters[(index % 7 + 7) % 7];
+    const natuurlijkeMidi =
+        (octaaf + 1) * 12 +
+        natuurlijkeToonhoogtes[letter];
+    const voorteken = midi - natuurlijkeMidi;
+
+    if (!(voorteken in voortekens)) {
+        throw new Error(`Kan noot ${midi} niet correct spellen als ${letter}`);
+    }
+
+    return {
+        letter,
+        teken: voortekens[voorteken],
+        octaaf
+    };
 }
 
 
@@ -266,7 +307,8 @@ function tekenNotenbalk() {
             const index =
                 diatonischeIndex(
                     midi,
-                    spelling.letter
+                    spelling.letter,
+                    spelling.octaaf
                 );
 
 
@@ -443,5 +485,3 @@ function tekenNotenbalk() {
     ctx.textAlign =
         "start";
 }
-
-

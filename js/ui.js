@@ -111,6 +111,19 @@ function maakDictee() {
 }
 
 
+function instellingenVoorMelodieGewijzigd() {
+
+    melodie = [];
+    stopMarkering();
+    verbergOplossing();
+
+    document.getElementById(
+        "melding"
+    ).textContent =
+        "instellingen gewijzigd; maak een nieuw dictee.";
+}
+
+
 /* =========================================================
    AFSPELEN
    ========================================================= */
@@ -387,6 +400,25 @@ document.getElementById(
 
         veranderTempo(
             this.value
+        );
+    }
+);
+
+
+[
+    "intervalKleineSecunde",
+    "intervalGroteSecunde",
+    "intervalKwart",
+    "intervalKwint",
+    "intervalOctaaf",
+    "aantalNoten",
+    "richting",
+    "beginnoot"
+].forEach(
+    id => {
+        document.getElementById(id).addEventListener(
+            "change",
+            instellingenVoorMelodieGewijzigd
         );
     }
 );
