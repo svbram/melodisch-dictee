@@ -406,8 +406,11 @@ document.getElementById(
 
 
 [
+    "intervalPrime",
     "intervalKleineSecunde",
     "intervalGroteSecunde",
+    "intervalKleineTerts",
+    "intervalGroteTerts",
     "intervalKwart",
     "intervalKwint",
     "intervalOctaaf",

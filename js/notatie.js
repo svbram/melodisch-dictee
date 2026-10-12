@@ -87,7 +87,7 @@ function diatonischeIndex(
 /* =========================================================
    SPELLING
    De notatie volgt de diatonische intervalafstand, zodat
-   secunden, kwarten en kwinten niet als tertsen verschijnen.
+   de gekozen intervallen correct gespeld worden.
    ========================================================= */
 
 const ZWARTE_TOETSEN = {
@@ -153,8 +153,11 @@ function spellingVoorNoot(melodie, i) {
     const verschil = midi - melodie[i - 1];
     const afstand = Math.abs(verschil);
     const diatonischeStappen = {
+        0: 0,
         1: 1,
         2: 1,
+        3: 2,
+        4: 2,
         5: 3,
         7: 4,
         12: 7

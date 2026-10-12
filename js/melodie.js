@@ -4,6 +4,11 @@
 
 const ALLE_INTERVALLEN = {
 
+    prime: {
+        afstand: 0,
+        checkbox: "intervalPrime"
+    },
+
     kleineSecunde: {
         afstand: 1,
         checkbox: "intervalKleineSecunde"
@@ -12,6 +17,16 @@ const ALLE_INTERVALLEN = {
     groteSecunde: {
         afstand: 2,
         checkbox: "intervalGroteSecunde"
+    },
+
+    kleineTerts: {
+        afstand: 3,
+        checkbox: "intervalKleineTerts"
+    },
+
+    groteTerts: {
+        afstand: 4,
+        checkbox: "intervalGroteTerts"
     },
 
     kwart: {
@@ -200,6 +215,7 @@ function bouwMelodie(
 
 
             if (
+                (afstand !== 0 || richting === "dalend") &&
                 omlaag >=
                 INSTELLINGEN.laagsteNoot
             ) {
@@ -259,5 +275,3 @@ function bouwMelodie(
 
     return null;
 }
-
-

@@ -38,8 +38,11 @@ document.getElementById(
 const OPSLAG_SLEUTEL = "melodischDictee.instellingen";
 
 const BEWAARDE_VELDEN = [
+    "intervalPrime",
     "intervalKleineSecunde",
     "intervalGroteSecunde",
+    "intervalKleineTerts",
+    "intervalGroteTerts",
     "intervalKwart",
     "intervalKwint",
     "intervalOctaaf",
@@ -135,5 +138,3 @@ document.addEventListener(
     "change",
     bewaarInstellingen
 );
-
-
