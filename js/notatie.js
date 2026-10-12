@@ -120,11 +120,9 @@ function spellingVoorNoot(melodie, i) {
         B: 11
     };
     const voortekens = {
-        "-2": "♭♭",
         "-1": "♭",
         0: "",
-        1: "♯",
-        2: "𝄪"
+        1: "♯"
     };
 
     if (i === 0) {
@@ -177,7 +175,13 @@ function spellingVoorNoot(melodie, i) {
     const voorteken = midi - natuurlijkeMidi;
 
     if (!(voorteken in voortekens)) {
-        throw new Error(`Kan noot ${midi} niet correct spellen als ${letter}`);
+        const eenvoudigeNaam = midiNaarNaam(midi);
+
+        return {
+            letter: eenvoudigeNaam[0],
+            teken: eenvoudigeNaam.slice(1),
+            octaaf: octaafVoorMidi(midi)
+        };
     }
 
     return {
